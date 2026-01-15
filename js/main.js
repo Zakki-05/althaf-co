@@ -2,12 +2,12 @@
 // Myrobalan Website - Enhanced Animations
 // ===================================
 
-document.addEventListener('DOMContentLoaded', function() {
-    
+document.addEventListener('DOMContentLoaded', function () {
+
     // Smooth scroll for navigation links
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
             if (href.startsWith('#')) {
                 e.preventDefault();
@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mobile menu toggle
     const hamburger = document.getElementById('hamburger');
     const nav = document.getElementById('nav');
-    
+
     if (hamburger && nav) {
-        hamburger.addEventListener('click', function() {
+        hamburger.addEventListener('click', function () {
             hamburger.classList.toggle('active');
             nav.classList.toggle('active');
         });
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Close menu when clicking on a link
         const mobileLinks = nav.querySelectorAll('.nav-link');
         mobileLinks.forEach(link => {
-            link.addEventListener('click', function() {
+            link.addEventListener('click', function () {
                 hamburger.classList.remove('active');
                 nav.classList.remove('active');
             });
@@ -45,11 +45,11 @@ document.addEventListener('DOMContentLoaded', function() {
         rootMargin: '0px 0px -50px 0px'
     };
 
-    const observer = new IntersectionObserver(function(entries) {
+    const observer = new IntersectionObserver(function (entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate-in');
-                
+
                 // Add staggered animation to children if they exist
                 const children = entry.target.querySelectorAll('.benefit-card, .product-card, .stat-item');
                 children.forEach((child, index) => {
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Parallax effect for hero image
     const heroImage = document.querySelector('.hero-image');
     if (heroImage) {
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             const scrolled = window.pageYOffset;
             const rate = scrolled * 0.3;
             if (heroImage) {
@@ -83,21 +83,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add ripple effect to buttons
     const buttons = document.querySelectorAll('.btn');
     buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
+        button.addEventListener('click', function (e) {
             const ripple = document.createElement('span');
             ripple.classList.add('ripple-effect');
-            
+
             const rect = this.getBoundingClientRect();
             const size = Math.max(rect.width, rect.height);
             const x = e.clientX - rect.left - size / 2;
             const y = e.clientY - rect.top - size / 2;
-            
+
             ripple.style.width = ripple.style.height = size + 'px';
             ripple.style.left = x + 'px';
             ripple.style.top = y + 'px';
-            
+
             this.appendChild(ripple);
-            
+
             setTimeout(() => {
                 ripple.remove();
             }, 600);
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const isPercentage = target.includes('%');
         const isPlusSign = target.includes('+');
         const numericValue = parseInt(target.replace(/[^0-9]/g, ''));
-        
+
         if (!isNaN(numericValue)) {
             let current = 0;
             const increment = numericValue / 50;
@@ -139,31 +139,61 @@ document.addEventListener('DOMContentLoaded', function() {
         statsObserver.observe(stat);
     });
 
-    // Form submission handler
+    // Form submission handler with AJAX
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            
-            // Add success animation
+
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
-            
-            submitBtn.textContent = '✓ Message Sent!';
-            submitBtn.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
-            
-            setTimeout(() => {
-                submitBtn.textContent = originalText;
-                submitBtn.style.background = '';
-                this.reset();
-            }, 3000);
+            const formData = new FormData(this);
+
+            // Show loading state
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Success
+                    submitBtn.textContent = '✓ Message Sent!';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
+                    this.reset();
+
+                    setTimeout(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.style.background = '';
+                        submitBtn.disabled = false;
+                    }, 3000);
+                } else {
+                    // Error
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                submitBtn.textContent = '✗ Failed. Try again';
+                submitBtn.style.background = 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)';
+
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.style.background = '';
+                    submitBtn.disabled = false;
+                }, 3000);
+            }
         });
     }
 
     // Add hover sound effect class (visual feedback)
     const cards = document.querySelectorAll('.product-card, .benefit-card');
     cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
+        card.addEventListener('mouseenter', function () {
             this.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
         });
     });
@@ -171,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Smooth header background on scroll
     const header = document.querySelector('.header');
     if (header) {
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             if (window.scrollY > 50) {
                 header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
                 header.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
@@ -185,21 +215,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add tilt effect to product cards
     const productCards = document.querySelectorAll('.product-card');
     productCards.forEach(card => {
-        card.addEventListener('mousemove', function(e) {
+        card.addEventListener('mousemove', function (e) {
             const rect = this.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
+
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
+
             const rotateX = (y - centerY) / 10;
             const rotateY = (centerX - x) / 10;
-            
+
             this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-16px)`;
         });
-        
-        card.addEventListener('mouseleave', function() {
+
+        card.addEventListener('mouseleave', function () {
             this.style.transform = '';
         });
     });
