@@ -294,21 +294,24 @@
                         </div>
                     </div>
 
-                    <form class="contact-form" id="contactForm" action="https://formspree.io/f/mpwzwvvw" method="POST">
+                    <form class="contact-form" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+                        <!-- Web3Forms Access Key -->
+                        <input type="hidden" name="access_key" value="fce8e13e-66bb-4120-93ec-853bf96a629c">
+                        <input type="hidden" name="subject" value="New Contact from Althaf&co Website">
+                        <input type="hidden" name="from_name" value="Althaf&co Contact Form">
+
                         <div class="form-group">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" id="name" name="name" class="form-input" required>
                         </div>
                         <div class="form-group">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" id="email" name="_replyto" class="form-input" required>
+                            <input type="email" id="email" name="email" class="form-input" required>
                         </div>
                         <div class="form-group">
                             <label for="message" class="form-label">Message</label>
                             <textarea id="message" name="message" class="form-textarea" rows="5" required></textarea>
                         </div>
-                        <!-- Hidden field to specify your email -->
-                        <input type="hidden" name="_subject" value="New Contact Form Submission from Althaf&co Website">
                         <button type="submit" class="btn btn-primary btn-full">Send Message</button>
                     </form>
                 </div>

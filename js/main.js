@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
         statsObserver.observe(stat);
     });
 
-    // Form submission handler with AJAX
+    // Form submission handler with Web3Forms
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async function (e) {
@@ -147,22 +147,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
-            const formData = new FormData(this);
 
             // Show loading state
             submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
 
+            const formData = new FormData(this);
+
             try {
-                const response = await fetch(this.action, {
+                const response = await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    body: formData
                 });
 
-                if (response.ok) {
+                const data = await response.json();
+
+                if (data.success) {
                     // Success
                     submitBtn.textContent = '✓ Message Sent!';
                     submitBtn.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
@@ -174,8 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         submitBtn.disabled = false;
                     }, 3000);
                 } else {
-                    // Error
-                    throw new Error('Form submission failed');
+                    throw new Error('Submission failed');
                 }
             } catch (error) {
                 submitBtn.textContent = '✗ Failed. Try again';
